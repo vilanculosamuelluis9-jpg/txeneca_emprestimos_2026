@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Txeneca - Empréstimos rápidos e seguros para si</title>
+<meta content="#ff6600" name="theme-color"/>
+<style>
+    :root{
+      --laranja:#ff6600;
+      --laranja-escuro:#e65c00;
+      --cinza-claro:#f9f9f9;
+      --texto:#333;
+      --areia:#fff7f0;
+      --borda:#ffb07a;
+    }
+    *{box-sizing:border-box}
+    body { font-family: 'Segoe UI', Arial, sans-serif; margin:0; background:var(--cinza-claro); color:var(--texto); }
+    header {
+      background: #fff;
+      color: var(--laranja);
+      text-align: center; padding: 25px 15px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.2);
+    }
+    header h1 { margin:0; font-size:2em; color: var(--laranja); }
+    header p  { margin:6px 0 0 0; font-size:1.05em; color: var(--laranja); }
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      padding: 30px 25px;
+    }
+    h2 { color: var(--laranja); text-align:center; margin-top:0; }
+    p  { line-height:1.6em; text-align:center; font-size:1.05em; }
+    .btn {
+      display:block; width:100%; max-width:680px; margin:10px auto; padding:14px 18px;
+      background:#ff6600; color:#fff; text-decoration:none; border-radius:12px;
+      font-size:18px; font-weight:bold; text-align:center; transition:.3s; box-shadow:0 2px 6px rgba(0,0,0,.2);
+    }
+    .btn:hover{ background:#e65c00; }
+    .btn.secondary { background: #333; }
+    .btn.secondary:hover { background: #444; }
+    .bloco {
+      background:#fff6ef; border-left:6px solid var(--laranja); border-radius:10px;
+      padding:20px; margin:25px 0; box-shadow:0 2px 6px rgba(0,0,0,0.05);
+    }
+    .icone { font-size:2em; color:var(--laranja); text-align:center; }
+    .quadrado {
+      background:#fff4e6; border:2px solid var(--borda); border-radius:10px; padding:16px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08); max-width:680px; margin:0 auto;
+    }
+    .quadrado h3 { color:var(--laranja); text-align:center; margin:6px 0 4px 0; }
+    .sub { text-align:center; margin:0 0 10px 0; opacity:.9; }
+    input[type=range]{ width:100%; margin:12px 0 6px 0; }
+    .ticks{ display:flex; justify-content:space-between; font-weight:bold; margin:6px 2px 8px 2px; }
+    .ticks span{ opacity:.85; }
+    .sep{ height:1px; background:#e6e6e6; margin:10px 0 12px 0; }
+    .output{
+      padding:20px;
+      background:#fff;
+      border:1px solid #ddd;
+      border-radius:10px;
+      text-align:center;
+      font-size:18px;
+      line-height:2.2em;
+      box-shadow:0 1px 3px rgba(0,0,0,0.06);
+      max-width:680px;
+      margin:0 auto;
+    }
+    .output .linha{ font-weight:bold; }
+    .taxa { background:#fff3cd; border:1px solid #ffeeba; padding:15px; border-radius:12px; text-align:center; margin:20px auto; font-size:1em; box-shadow:0 2px 4px rgba(0,0,0,0.1); max-width:680px; }
+    form { background:white; padding:20px; border-radius:15px; box-shadow:0 3px 8px rgba(0,0,0,0.15); max-width:680px; margin:18px auto 0 auto; }
+    form label { display:block; margin-top:15px; font-weight:bold; color:#333; }
+    form input[type="text"], form input[type="tel"], form input[type="file"], form select { width:100%; padding:12px; border:1px solid #ccc; border-radius:10px; margin-top:6px; font-size:16px; }
+    
+    .notificacao-final {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(20px) scale(0.96);
+      transition: opacity 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.3s ease;
+      pointer-events: none;
+      max-width: 360px;
+      width: calc(100% - 40px);
+      overflow: hidden;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      border-left: 4px solid #ff6600;
+    }
+    .notificacao-final.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .notificacao-titulo {
+      background: transparent;
+      padding: 16px 18px 8px 18px;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: #ff6600;
+      text-transform: uppercase;
+      border-bottom: 1px solid #f0e9e3;
+    }
+    .notificacao-mensagem {
+      padding: 14px 18px 18px 18px;
+      color: #1e2a3a;
+      font-size: 15px;
+      line-height: 1.5;
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .confianca-container {
+      background: linear-gradient(135deg, #fff9f2 0%, #fff 100%);
+      border-radius: 20px;
+      padding: 30px 25px;
+      margin: 40px 0 20px 0;
+      box-shadow: 0 5px 20px rgba(255, 102, 0, 0.1);
+      border: 1px solid #ffe0cc;
+    }
+    .confianca-titulo {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .confianca-titulo h3 {
+      color: #ff6600;
+      font-size: 28px;
+      margin: 0 0 10px 0;
+      font-weight: 800;
+    }
+    .confianca-titulo p {
+      color: #666;
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .confianca-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .confianca-item {
+      background: white;
+      border-radius: 16px;
+      padding: 20px 18px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+      border: 1px solid #fff0e6;
+      transition: transform 0.2s;
+    }
+    .confianca-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 102, 0, 0.15);
+      border-color: #ffb07a;
+    }
+    .confianca-icone {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+    .confianca-item h4 {
+      color: #ff6600;
+      font-size: 18px;
+      margin: 0 0 8px 0;
+      font-weight: 700;
+    }
+    .confianca-item p {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0;
+      text-align: left;
+    }
+    
+    .topo {
+      background: #ffffff;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.15);
+    }
+    .logo-txeneca {
+      font-size: 1.9em;
+      font-weight: 800;
+      color: #ff6600;
+    }
+    .menu-icon {
+      font-size: 2.1em;
+      color: #ff6600;
+      cursor: pointer;
+    }
+    .menu-dropdown {
+      display: none;
+      flex-direction: column;
+      background: #ffffff;
+      width: 100%;
+      padding: 18px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+      position: absolute;
+      top: 70px;
+      left: 0;
+      z-index: 999;
+    }
+    .menu-dropdown a {
+      text-decoration: none;
+      font-size: 1.3em;
+      padding: 12px 0;
+      color: #333;
+      display: block;
+      border-bottom: 1px solid #eee;
+    }
+    .menu-dropdown a:last-child { border-bottom: none; }
+
+    .taxa-dinamica {
+      text-align:center;
+      font-size:19px;
+      margin-top:18px;
+      font-weight:600;
+      color:#333;
+      background:#ffffff;
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:12px 14px;
+      max-width:680px;
+      margin-left:auto;
+      margin-right:auto;
+      white-space: nowrap;
+    }
+
+    .valor-dinamico {
+      white-space: nowrap;
+    }
+
+    #spinner_tx {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #ff6600;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      animation: spin 1s linear infinite;
+      margin-top: 10px;
+      display: none;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #valor {
+      white-space: nowrap !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    body { 
+      position: relative; 
+      overflow-x: hidden; 
+    }
+
+    #pastaDevolucoes {
+      display: none;
+      background: #f5f5f5;
+      border-radius: 20px;
+      padding: 25px;
+      margin-top: 20px;
+      border: 2px solid #ff6600;
+    }
+    #pastaDevolucoes h2 {
+      color: #ff6600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+    .info-conta-destaque {
+      background: linear-gradient(135deg, #333, #222);
+      color: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin: 20px 0 30px 0;
+      text-align: center;
+      border: 2px solid #ff6600;
+    }
+    .info-conta-destaque h3 {
+      color: #ff6600;
+      font-size: 20px;
+      margin: 0 0 15px 0;
+    }
+    .numero-conta {
+      font-size: 32px;
+      font-weight: 800;
+      background: #ff6600;
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 60px;
+      display: inline-block;
+      margin: 10px 0;
+      letter-spacing: 2px;
+      box-shadow: 0 5px 15px rgba(255,102,0,0.3);
+    }
+    .btn-copiar-grande {
+      background: #fff;
+      color: #ff6600;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      margin-left: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      border: 2px solid #ff6600;
+    }
+    .btn-copiar-grande:hover {
+      background: #ff6600;
+      color: #fff;
+    }
+    .aviso-conta {
+      color: #ffaa00;
+      font-size: 14px;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    
+    .devolucao-card {
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 15px;
+      border-left: 4px solid #ff6600;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      margin-bottom: 15px;
+    }
+    .devolucao-card .pessoa {
+      font-weight: 700;
+      font-size: 16px;
+      color: #333;
+    }
+    .devolucao-card .local {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .devolucao-card .valor-prestacao {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ff6600;
+      margin: 5px 0;
+    }
+    .devolucao-card .info-emprestimo {
+      font-size: 14px;
+      color: #444;
+      margin: 5px 0;
+    }
+    .devolucao-card .metodo {
+      color: #666;
+      font-size: 13px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed #ddd;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+    }
+    .badge-concluido { background: #4CAF50; }
+    .badge-andamento { background: #ff9800; }
+    .badge-inicio { background: #f44336; }
+    
+    .devolucoes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 25px 0;
+    }
+    
+    .controles-pasta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      border-radius: 15px;
+      padding: 15px 20px;
+      margin: 20px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .timer-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .timer-circle {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #ff6600;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .btn-atualizar {
+      background: #ff6600;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-atualizar:hover {
+      background: #e65c00;
+    }
+    .contador-mensagens {
+      background: #333;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 50px;
+      font-size: 14px;
+    }
+    
+    .resumo-stats {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .stat-item {
+      text-align: center;
+      min-width: 100px;
+    }
+    .stat-valor {
+      font-size: 24px;
+      font-weight: 800;
+      color: #ff6600;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: #666;
+    }
+    
+    .contactos-container {
+      background: #fff9f2;
+      border-radius: 20px;
+      padding: 25px;
+      margin-top: 30px;
+      text-align: center;
+      border: 1px solid #ffccb3;
+    }
+    .contactos-container h3 {
+      color: #ff6600;
+      font-size: 24px;
+      margin: 0 0 20px 0;
+    }
+    .contactos-info {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+    }
+    .contacto-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      padding: 10px 20px;
+      border-radius: 50px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .contacto-item span {
+      color: #333;
+      font-size: 16px;
+    }
+    .contacto-item strong {
+      color: #ff6600;
+      font-size: 18px;
+    }
+
+    .chatbot-btn {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      background: #ff6600;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      z-index: 10000;
+      transition: all 0.2s ease;
+      border: none;
+      font-size: 28px;
+    }
+    .chatbot-btn:hover {
+      background: #e65c00;
+      transform: scale(1.05);
+    }
+    .chatbot-window {
+      position: fixed;
+      bottom: 160px;
+      right: 20px;
+      width: 340px;
+      max-width: calc(100vw - 40px);
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      z-index: 10001;
+      overflow: hidden;
+      border: 1px solid rgba(255,102,0,0.3);
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .chatbot-window.show {
+      display: flex;
+    }
+    .chatbot-header {
+      background: #ff6600;
+      color: white;
+      padding: 16px 18px;
+      font-weight: bold;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chatbot-header span {
+      cursor: pointer;
+      font-size: 22px;
+    }
+    .chatbot-messages {
+      height: 340px;
+      overflow-y: auto;
+      padding: 15px;
+      background: #fafaf5;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .message {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .user-msg {
+      background: #ff6600;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .bot-msg {
+      background: #f1f1f1;
+      color: #333;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .chatbot-input-area {
+      display: flex;
+      border-top: 1px solid #eee;
+      padding: 12px;
+      background: white;
+    }
+    .chatbot-input-area input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      padding: 10px 15px;
+      font-size: 14px;
+      outline: none;
+    }
+    .chatbot-input-area button {
+      background: #ff6600;
+      border: none;
+      color: white;
+      margin-left: 8px;
+      border-radius: 30px;
+      padding: 0 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .sugestoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #fff3e6;
+      border-top: 1px solid #ffd9bf;
+    }
+    .sugestao-chip {
+      background: white;
+      border: 1px solid #ffb07a;
+      border-radius: 30px;
+      padding: 6px 12px;
+      font-size: 12px;
+      color: #ff6600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .sugestao-chip:hover {
+      background: #ff6600;
+      color: white;
+    }
+    
+    .preview-rosto {
+      text-align: center;
+      margin-top: 8px;
+    }
+    .preview-rosto img {
+      max-width: 150px;
+      border: 2px solid #ff6600;
+      border-radius: 50%;
+      object-fit: cover;
+      width: 150px;
+      height: 150px;
+      display: none;
+    }
+    /* ========== ESTILOS DA CÂMARA MELHORADA (MAIOR E COM GALERIA) ========== */
+    .btn-camera {
+      background: #ff6600;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 8px 6px;
+      font-size: 16px;
+      transition: 0.2s;
+      display: inline-block;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .btn-camera:hover { background: #e65c00; transform: scale(1.02); }
+    .btn-camera.galeria { background: #28a745; }
+    .btn-camera.galeria:hover { background: #218838; }
+    .btn-camera.fechar { background: #6c757d; }
+    #cameraContainer {
+      background: #ffffff;
+      border-radius: 32px;
+      padding: 24px 20px;
+      margin-top: 16px;
+      text-align: center;
+      border: 2px solid #ff6600;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+      max-width: 560px;
+      width: 100%;
+    }
+    #videoCam {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 24px;
+      border: 3px solid #ff6600;
+      background: #000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      aspect-ratio: 4/3;
+      object-fit: cover;
+    }
+    .upload-fallback {
+      margin-top: 10px;
+      text-align: center;
+      display: none;
+    }
+    .upload-fallback label {
+      background: #ff6600;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      display: inline-block;
+      font-weight: bold;
+    }
+    .upload-fallback input { display: none; }
+    /* fim estilos câmara */
+    .detalhes-prazo-card {
+      background: #fffef7;
+      border-radius: 24px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      border: 1px solid #ffd9bf;
+      text-align: left;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .detalhes-prazo-card .titulo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ff6600;
+      text-align: center;
+      margin-bottom: 20px;
+      letter-spacing: -0.3px;
+    }
+    .detalhes-prazo-card .linha {
+      margin: 14px 0;
+      font-size: 1.1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      border-bottom: 1px dashed #ffe0cc;
+      padding-bottom: 10px;
+    }
+    .detalhes-prazo-card .linha:last-child { border-bottom: none; }
+    .detalhes-prazo-card .label { font-weight: 700; color: #b44d00; }
+    .detalhes-prazo-card .valor { font-weight: 600; color: #2c2c2c; }
+
+    .campo-nome-confirmacao { margin-top: 12px; }
+    .input-com-borda {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ff6600;
+        border-radius: 12px;
+        font-size: 16px;
+        margin-top: 6px;
+    }
+    .label-pequeno {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .resumo-pagamento-cliente {
+        background: #fff0e6;
+        border-radius: 20px;
+        padding: 20px 18px;
+        margin: 20px auto;
+        text-align: left;
+        border-left: 6px solid #ff6600;
+        max-width: 680px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .resumo-pagamento-cliente .linha-resumo {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding: 10px 0;
+        border-bottom: 1px dashed #ffccb3;
+        font-size: 1.05rem;
+    }
+    .resumo-pagamento-cliente .linha-resumo:last-child { border-bottom: none; }
+    .label-resumo { font-weight: 700; color: #b44d00; }
+    .valor-resumo { font-weight: 800; color: #ff6600; font-size: 1.2rem; }
+    .icone-caixa { font-size: 1.2rem; margin-right: 6px; }
+
+    /* PASTA SALDO TXENECA */
+    .pasta-saldo-clicavel {
+      background: #0d6efd;
+      border-radius: 40px;
+      padding: 6px 14px;
+      margin: 20px auto 8px auto;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      max-width: 210px;
+      box-shadow: 0 4px 10px rgba(13,110,253,0.3);
+      border: none;
+    }
+    .pasta-saldo-clicavel:hover {
+      transform: scale(1.02);
+      background: #0b5ed7;
+      box-shadow: 0 6px 14px rgba(13,110,253,0.4);
+    }
+    .pasta-saldo-clicavel .icone-pasta {
+      font-size: 24px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .pasta-saldo-clicavel span {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+    .pasta-saldo-clicavel small {
+      font-size: 9px;
+      color: #e0f0ff;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .saldo-painel {
+      display: none;
+      background: linear-gradient(145deg, #a00000, #c00000);
+      border-radius: 24px;
+      padding: 14px 12px;
+      margin-top: 12px;
+      text-align: center;
+      border: none;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 6px 16px rgba(192, 0, 0, 0.35);
+      transition: 0.2s;
+    }
+
+    .saldo-card {
+      background: white;
+      border-radius: 18px;
+      padding: 12px 10px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.05), 0 2px 5px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .saldo-card h3 {
+      color: #c00000;
+      font-size: 12px;
+      margin: 0 0 8px 0;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      background: #ffeeee;
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 30px;
+    }
+
+    .saldo-card .valor {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1e2a3a;
+      font-family: 'Courier New', 'Segoe UI', monospace;
+      background: #f8f9fc;
+      padding: 8px 12px;
+      border-radius: 24px;
+      display: inline-block;
+      letter-spacing: 0.5px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.05);
+      border: 1px solid #e0e0e0;
+    }
+
+    .saldo-card .desc {
+      font-size: 10px;
+      color: #4a4a4a;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    .btn-fechar-saldo {
+      background: #ffffffcc;
+      color: #c00000;
+      border: 1px solid #fff;
+      margin-top: 10px;
+      display: inline-block;
+      width: auto;
+      padding: 4px 18px;
+      font-size: 11px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.2s;
+      backdrop-filter: blur(2px);
+    }
+
+    .btn-fechar-saldo:hover {
+      background: white;
+      color: #a00000;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="logo-txeneca">Txeneca</div>
+  <div class="menu-icon" id="botaoMenu">☰</div>
+</header>
+
+<nav id="menuDropdown" class="menu-dropdown">
+  <a href="#" onclick="mostrarSecao('principal')">🏠 Página Inicial</a>
+  <a href="#" onclick="mostrarSecao('devolucoes')">📁 Abrir pasta de devolução de valores</a>
+  <a href="https://wa.me/258853324244?text=Ol%C3%A1%2C%20quero%20registar%20minha%20conta%20✅" target="_blank">👤 Regista sua conta</a>
+  <a href="#" onclick="mostrarPastaSaldo(); fecharMenu();">💰 SALDO TXENECA</a>
+  <a href="#solicitar" onclick="document.getElementById('solicitar').scrollIntoView({behavior:'smooth'}); menu.style.display='none';">💰 Solicita o seu empréstimo</a>
+  <a href="#formulario" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'}); menu.style.display='none';">🗂️ Área do cliente</a>
+  <a href="https://wa.me/258862159309" target="_blank">📱 Falar no WhatsApp</a>
+</nav>
+
+<main id="principal">
+<section>
+<h2 style="color:#000;">Empréstimos rápidos<br>e seguros para<br>alcançar os seus<br>Objetivos</h2>
+<p>Com a <strong>Txeneca</strong>, você tem acesso a <strong>empréstimos de 6.000 a 250.000 MZN</strong>, com aprovação rápida e condições transparentes.</p>
+<a class="btn" href="#solicitar" onclick="document.getElementById('solicitar').scrollIntoView({behavior:'smooth'})">📌 Solicitar Empréstimo</a>
+<a class="btn" href="#formulario" onclick="document.getElementById('formulario').scrollIntoView({behavior:'smooth'})" style="background:#FF7A1A;color:#fff;">📝 Regista-se</a>
+
+<div class="pasta-saldo-clicavel" id="pastaSaldoClicavel" onclick="mostrarPastaSaldo();">
+  <div class="icone-pasta">💳</div>
+  <span>SALDO TXENECA</span>
+  <small></small>
+</div>
+
+<div id="painelSaldo" class="saldo-painel">
+  <div class="saldo-card">
+    <h3>💳 SALDO TXENECA</h3>
+    <div class="valor" id="saldoValorDisplay">5,000,000 MT</div>
+    <div class="desc">Saldo disponível em caixa</div>
+  </div>
+  <button class="btn-fechar-saldo" onclick="fecharPainelSaldo()">Fechar</button>
+</div>
+
+</section>
+
+<section id="porque-txeneca" style="text-align:center; margin:40px 0;">
+<h2 style="color:#ff6600;">Por que escolher a Txeneca?</h2>
+<p style="max-width:700px;margin:10px auto;font-size:1.1em;line-height:1.7em;color:#333;">Oferecemos as melhores condições para o seu empréstimo com processos simples, rápidos e totalmente transparentes. A <strong>Txeneca</strong> é uma plataforma confiável que analisa o seu pedido em até 8 minutos após o pagamento da taxa de inscrição.</p>
+</section>
+
+<div class="bloco"><div class="icone">🔒</div><h3 style="text-align:center;">Segurança Garantida</h3><p>Seus dados estão protegidos com os mais altos padrões de segurança.</p></div>
+<div class="bloco"><div class="icone">💰</div><h3 style="text-align:center;">Taxas Transparentes</h3><p>Sem taxas ocultas ou surpresas desagradáveis. Tudo claro desde o início.</p></div>
+<div class="bloco"><div class="icone">📝</div><h3 style="text-align:center;">Processo Simples</h3><p>Obtenha seu empréstimo em apenas alguns passos rápidos e seguros.</p></div>
+
+<div class="bloco"><div class="icone">❓</div><h3 style="text-align:center;">Para que serve a taxa de inscrição?</h3><p>A <strong>taxa de inscrição</strong> cobre os custos de análise de crédito, Processamento da solicitação . Ela garante que a sua proposta seja avaliada com prioridade e transparência.</p></div>
+
+<button class="btn secondary" onclick="mostrarSecao('devolucoes')" style="margin:20px auto;">📁 Abrir pasta de devolução de valores</button>
+
+<section id="solicitar">
+<h2>📊 Taxa de Inscrição &amp; Valor do Empréstimo</h2>
+<div class="quadrado">
+<h3>Valor do Empréstimo</h3>
+<p class="sub">Selecione o valor (MZN)</p>
+<input id="slider" max="30" min="0" step="1" type="range" value="0"/>
+<div class="ticks"><span>6.000</span><span>100.000</span><span>250.000</span></div>
+<div class="sep"></div>
+<div class="output"><div class="linha" id="valor" class="valor-dinamico">Recebe: --</div></div>
+<p id="taxa" class="taxa-dinamica">Taxa de Inscrição: --</p>
+</div>
+</div>
+
+<div id="tabelaPrazo" style="margin-top:25px; display:none; max-width:680px; margin-left:auto; margin-right:auto;"><div id="conteudoPrazo"></div></div>
+
+<section id="formulario">
+<div style="text-align:center;margin:20px 0 5px 0;"><h2 style="color:#ff6600;margin:0 0 6px 0;">Solicite Seu Empréstimo</h2><p style="margin:0;">Preencha o formulário abaixo para iniciar seu pedido de empréstimo.</p></div>
+<h2>📝 Formulário de Solicitação</h2>
+<p id="resumoEscolhaFormulario" style="text-align:center;font-weight:bold;color:#d84315;margin-top:5px;">Escolha atual do valor a receber: --</p>
+<form id="formSolicitacao">
+<label for="nome">👤 Nome Completo</label>
+<input id="nome" placeholder="Digite o seu nome completo" required="" type="text"/>
+
+<label for="formaRecebimento">Forma de Recebimento</label>
+<select id="formaRecebimento" name="formaRecebimento" required>
+  <option value="">Selecione a forma de recebimento</option>
+  <option value="mpesa">M-Pesa</option>
+  <option value="emola">e-Mola</option>
+  <option value="banco">Conta bancária</option>
+</select>
+
+<div id="grupoNumeroConta" style="margin-top:15px;">
+  <label for="telefone" id="labelNumeroConta" style="display:block; font-weight:bold; color:#333; margin-bottom:8px; font-size:1.1em;">📞 Digite o número para recebimento</label>
+  <input id="telefone" type="tel" required placeholder="Ex: 84xxxxxxx / 85xxxxxxx (Emola ou Mpesa)" style="width:100%; padding:14px; border:2px solid #ff6600; border-radius:12px; font-size:16px;">
+  
+  <div class="campo-nome-confirmacao">
+      <label for="nomeConfirmacao" style="font-weight:bold; color:#333;">✍️ Nome de confirmação da conta</label>
+      <input type="text" id="nomeConfirmacao" class="input-com-borda" placeholder="Digite seu nome da conta" required>
+      <small class="label-pequeno">Digite seu nome da conta se for conta bancária digita o nome do seu banco</small>
+  </div>
+  
+  <div id="grupoBanco" style="display:none; margin-top:12px;">
+      <label for="nomeBanco" style="font-weight:bold; color:#333;">🏦 Nome do Banco</label>
+      <input type="text" id="nomeBanco" class="input-com-borda" placeholder="Ex: Millennium BIM, BCI, Standard Bank, etc.">
+      <small class="label-pequeno">Digite o nome do seu banco</small>
+  </div>
+</div>
+
+<label for="provincia">🌍 Província</label>
+<select id="provincia" required=""><option value="">-- SELECIONE A SUA PROVÍNCIA --</option><option>Maputo</option><option>Inhambane</option><option>Nampula</option><option>Gaza</option><option>Tete</option><option>Sofala (Beira)</option><option>Cabo Delgado</option><option>Niassa</option><option>Manica</option><option>Zambézia</option></select>
+
+<label for="setor">💼 Setor de Trabalho</label>
+<select id="setor" required=""><option value="">-- SELECIONE O SEU SETOR DE TRABALHO --</option><option>Comércio</option><option>Agricultura</option><option>Conta Própria</option><option>Funcionário público</option><option>Funcionário privado</option><option>Construção Civil</option><option>Educação</option><option>Saúde</option><option>Transporte</option><option>Outros</option></select>
+
+<label for="bairro">🏘️ Bairro</label>
+<input id="bairro" placeholder="Digite o seu bairro" required="" type="text"/>
+
+<label for="casa">🏠 Número da Casa</label>
+<input id="casa" placeholder="Ex: 23" required="" type="text"/>
+
+<label for="quarteirao">🛣️ Número do Quarteirão</label>
+<input id="quarteirao" placeholder="Ex: 12" required="" type="text"/>
+
+<label for="doc_frente">🆔 B.I (Frente)</label>
+<input id="doc_frente" required type="file" accept="image/*" onchange="previewFrente(event)">
+<div style="text-align:center;margin-top:8px;"><img id="preview_frente" style="max-width:100%;display:none;border:2px solid #ff6600;border-radius:8px;"/></div>
+
+<label for="doc_verso">🆔 B.I (Verso)</label>
+<input id="doc_verso" required type="file" accept="image/*" onchange="previewVerso(event)">
+<div style="text-align:center;margin-top:8px;"><img id="preview_verso" style="max-width:100%;display:none;border:2px solid #ff6600;border-radius:8px;"/></div>
+
+<label>📸 Foto pessoal de rosto</label>
+<button type="button" id="abrirCameraBtn" class="btn-camera">📷 Abrir câmara</button>
+<input type="hidden" id="fotoBase64" required>
+<div id="cameraContainer" style="display: none;">
+  <video id="videoCam" autoplay playsinline style="width:100%; border-radius:24px;"></video>
+  <div style="margin-top: 16px;">
+    <button type="button" id="capturarFotoBtn" class="btn-camera">📸 Tirar foto</button>
+    <button type="button" id="galeriaCameraBtn" class="btn-camera galeria">📁 Escolher da galeria</button>
+    <button type="button" id="fecharCameraBtn" class="btn-camera fechar">❌ Fechar</button>
+  </div>
+  <canvas id="canvasCam" style="display: none;"></canvas>
+  <input type="file" id="cameraGaleriaInput" accept="image/*" style="display:none;">
+</div>
+<div class="upload-fallback" id="uploadFallback">
+  <label for="fotoUpload">📁 Selecionar foto da galeria</label>
+  <input type="file" id="fotoUpload" accept="image/*">
+</div>
+<div class="preview-rosto"><img id="preview_rosto" style="max-width:150px; border-radius:50%; display:none; border:2px solid #ff6600; margin-top:8px;"></div>
+
+<button class="btn" id="btnEtapa1" style="margin-top:18px;" type="submit">📤 ENVIAR SOLICITAÇÃO</button>
+</form>
+</section>
+
+<section id="pagamento" style="display:none; margin-top:24px;">
+<h2>💳 Pagamento da Taxa de Inscrição</h2>
+<div class="taxa" style="text-align:center;">
+  <div style="background:#ffffff; padding:20px; border-radius:14px; box-shadow:0 3px 10px rgba(0,0,0,0.12); border:1px solid #e6e6e6; text-align:center; font-size:22px; font-weight:700; color:#333; max-width:700px; margin:0 auto 15px auto;"><p id="taxaEscolhida" style="margin:0;">Taxa a pagar: --</p></div>
+  
+  <hr style="border:1px solid #ffffff; margin:10px 0;">
+  <h3 style="margin:0; color:#d84315;">Número para transferência da taxa</h3>
+  <div style="text-align:center; margin:10px 0;">
+    <p style="font-size:1.6em; font-weight:bold; color:#333; margin:5px 0;" id="numeroPagamento">862159309</p>
+    <button onclick="navigator.clipboard.writeText('862159309'); alert('Número copiado com sucesso!');" style="padding:10px 16px; background:#ff6600; color:#fff; border:none; border-radius:8px; font-size:1em; cursor:pointer;">📋 Copiar Número</button>
+  </div>
+  <p style="font-size:1.05em; color:brown; font-weight:bold; margin:5px 0;">Nome de confirmação</p>
+  <p style="font-size:1.2em; color:brown; font-weight:bold; margin:5px 0;">Nelson Alexandre</p>
+  
+  <div class="resumo-pagamento-cliente" id="resumoPagamentoCliente">
+    <div class="linha-resumo"><span class="label-resumo"><span class="icone-caixa">💰</span> Valor solicitado:</span><span class="valor-resumo" id="resumoValorSolicitado">--- MT</span></div>
+    <div class="linha-resumo"><span class="label-resumo"><span class="icone-caixa">💸</span> Taxa a pagar:</span><span class="valor-resumo" id="resumoTaxaPagar">--- MT</span></div>
+    <div class="linha-resumo"><span class="label-resumo"><span class="icone-caixa">📞</span> Número a receber:</span><span class="valor-resumo" id="resumoNumeroConta">---</span></div>
+    <div class="linha-resumo"><span class="label-resumo"><span class="icone-caixa">👤</span> Nome de confirmação:</span><span class="valor-resumo" id="resumoNomeConfirmacao">---</span></div>
+  </div>
+  
+  <p style="font-size:1.05em; background:#fff4e6; border-left:5px solid #ff6600; padding:10px 14px; border-radius:8px; color:#6b3b00; font-weight:bold; text-align:center; max-width:680px; margin:15px auto;">⏳ Após o pagamento da taxa aguarde durante os 8 minutos para receber o seu empréstimo</p>
+</div>
+<label for="numero-pagador" style="font-weight:bold;display:block;margin-top:20px;">Digite o seu número de pagamento (Vodacom ou Movitel):</label>
+<input id="numero-pagador" placeholder="Ex: 84xxxxxxx ou 85xxxxxxx" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;margin-top:6px;font-size:16px;" type="tel"/>
+<button class="btn" onclick="pagarTaxa()" style="background:#ff9800;" type="button">💸 Fazer Transferência da Taxa</button>
+<p style="font-size:18px;font-weight:bold;color:#333;margin-top:18px;">pague a taxa depois envia imagem do comprovativo aqui:</p>
+<p style="color:#d35400;font-weight:bold;margin:0 0 8px 0;">🔽 Carregue o ficheiro abaixo</p>
+<input accept="image/*" id="comprovativo" name="comprovativo" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;background:#fff;margin-top:6px;font-size:16px;" type="file"/>
+<div id="spinner_tx"></div>
+<div id="erro-comprovativo" style="color:red;font-weight:bold;margin-top:8px;display:none;"></div>
+<button class="btn" id="btnFinalizar" style="margin-top:14px;" type="button">Envie o comprovativo</button>
+</section>
+</main>
+
+<main id="pastaDevolucoes" style="display:none;">
+  <h2><span style="font-size:30px;">📁</span> PASTA DE DEVOLUÇÃO DE VALORES</h2>
+  <div class="info-conta-destaque">
+    <h3>💰 CONTA EXCLUSIVA PARA DEVOLUÇÕES</h3>
+    <div><span class="numero-conta">1233989186</span><button class="btn-copiar-grande" onclick="copiarNumero('1233989186')">📋 COPIAR</button></div>
+    <p style="font-size:18px; margin:15px 0 5px 0;"><strong>Millennium BIM</strong></p>
+    <p class="aviso-conta">⚠️ USE ESTA CONTA APENAS PARA PAGAR PRESTAÇÕES</p>
+  </div>
+  <div class="controles-pasta">
+    <div class="timer-info"><div class="timer-circle" id="timerCircle">40</div><div class="timer-text"><strong>A mostrar 30/300</strong><br><span id="timerLabel">A próxima leva em 40s</span></div></div>
+    <div><span class="contador-mensagens" id="contadorMensagens">30</span><button class="btn-atualizar" onclick="proximoLote()" style="margin-left:10px;">↻ Próximo</button></div>
+  </div>
+  <div class="resumo-stats" id="resumo-stats"></div>
+  <h3 style="margin:30px 0 15px 0; color:#333;">📋 PAGAMENTOS RECENTES</h3>
+  <div id="devolucoes-container" class="devolucoes-grid"></div>
+  <div style="text-align:center; margin:30px 0;"><button class="btn secondary" onclick="mostrarSecao('principal')" style="display:inline-block; width:auto; padding:12px 30px;">← VOLTAR</button></div>
+</main>
+
+<div class="confianca-container">
+  <div class="confianca-titulo"><h3>🤝 Por que confiar na Txeneca</h3><p>Os motivos que fazem de nós a escolha certa para o seu empréstimo</p></div>
+  <div class="confianca-grid">
+    <div class="confianca-item"><div class="confianca-icone">🔍</div><h4>Transparência total</h4><p>Sem taxas escondidas – o cliente sabe exatamente quanto paga e quanto recebe.</p></div>
+    <div class="confianca-item"><div class="confianca-icone">🛡️</div><h4>Segurança de dados</h4><p>Proteção avançada das suas informações pessoais e financeiras.</p></div>
+    <div class="confianca-item"><div class="confianca-icone">💬</div><h4>Atendimento humano</h4><p>Equipa pronta para acompanhar em todas as etapas do processo.</p></div>
+    <div class="confianca-item"><div class="confianca-icone">⚡</div><h4>Respostas rápidas</h4><p>Após o pagamento da taxa, a análise é concluída em até <strong>8 minutos</strong>.</p></div>
+    <div class="confianca-item"><div class="confianca-icone">⭐</div><h4>Experiência comprovada</h4><p>Milhares de clientes já receberam com sucesso os seus empréstimos.</p></div>
+    <div class="confianca-item"><div class="confianca-icone">📱</div><h4>Suporte 24/7</h4><p>Estamos sempre disponíveis para ajudar no que precisar.</p></div>
+  </div>
+</div>
+
+<div class="contactos-container">
+  <h3>📞 Contacto Oficial</h3>
+  <div class="contactos-info">
+    <div class="contacto-item"><span>📍</span><span>Maputo, Avenida Angola</span></div>
+    <div class="contacto-item"><span>📱</span><strong>+258 862 159 309</strong></div>
+    <div class="contacto-item"><span>✉️</span><span>atendimento@txeneca.co.mz</span></div>
+    <div class="contacto-item"><span>🕐</span><span>Segunda a Sábado, 8h-18h</span></div>
+  </div>
+</div>
+
+<footer style="text-align:center; padding:15px; color:#777; font-size:.95em;">© 2026 Txeneca - Todos os direitos reservados.</footer>
+<div id="notificacaoContainer"></div>
+
+<div class="chatbot-btn" id="chatbotBtn">❓</div>
+<div class="chatbot-window" id="chatbotWindow">
+  <div class="chatbot-header">Central de Ajuda - Txeneca<span id="closeChatbot">✕</span></div>
+  <div class="chatbot-messages" id="chatbotMessages"><div class="message bot-msg">Olá! 👋 Como posso ajudar? Pergunte sobre empréstimos, taxas, prazos ou como solicitar.</div></div>
+  <div class="sugestoes" id="sugestoesContainer">
+    <div class="sugestao-chip" data-pergunta="Como posso fazer empréstimo?">📌 Como solicitar?</div>
+    <div class="sugestao-chip" data-pergunta="Qual o número para pagar a taxa?">💰 Número da taxa</div>
+    <div class="sugestao-chip" data-pergunta="Qual o número da conta para devolução de valores?"></div>
+    <div class="sugestao-chip" data-pergunta="Quais os valores dos empréstimos?">💵 Valores disponíveis</div>
+    <div class="sugestao-chip" data-pergunta="Qual o prazo de pagamento?">📅 Prazos</div>
+    <div class="sugestao-chip" data-pergunta="Como funciona a devolução de valores?">📁 Número devoluções</div>
+    <div class="sugestao-chip" data-pergunta="O que é taxa de inscrição?">📄 Taxa de inscrição</div>
+    <div class="sugestao-chip" data-pergunta="Depois de pagar a taxa como enviar o comprovativo?">📎 Como enviar comprovativo</div>
+    <div class="sugestao-chip" data-pergunta="Qual a localização da Txeneca?">📍 Localização</div>
+  </div>
+  <div class="chatbot-input-area"><input type="text" id="chatbotInput" placeholder="Escreva sua dúvida..."><button id="enviarPergunta">Enviar</button></div>
+</div>
+
+<script>
+// ============================================================
+// SISTEMA DE SALDO - DÉBITO OCORRE NA PRIMEIRA NOTIFICAÇÃO (APROVAÇÃO)
+// ============================================================
+const SALDO_KEY = 'txeneca_saldo_final';
+let saldoTxeneca = localStorage.getItem(SALDO_KEY);
+if (saldoTxeneca === null) {
+    saldoTxeneca = 5000000;  // 5.000.000 MT
+} else {
+    saldoTxeneca = parseInt(saldoTxeneca, 10);
+    if (isNaN(saldoTxeneca)) saldoTxeneca = 5000000;
+}
+let ultimoValorDepositado = null;
+let reposicaoEmAndamento = false;
+
+function formatarMoeda(valor) {
+    return valor.toLocaleString('pt-PT').replace(/\./g, ',');
+}
+
+function guardarSaldo() {
+    localStorage.setItem(SALDO_KEY, saldoTxeneca);
+    atualizarSaldoDisplay();
+}
+
+function atualizarSaldoDisplay() {
+    const saldoDisplay = document.getElementById('saldoValorDisplay');
+    if (saldoDisplay) {
+        saldoDisplay.innerText = formatarMoeda(saldoTxeneca) + 'MZN';
+    }
+}
+
+function reporSaldoQuebrado() {
+    const opcoes = [3000000, 4000000, 5000000];
+    let valorSorteado;
+    do {
+        valorSorteado = opcoes[Math.floor(Math.random() * opcoes.length)];
+    } while (valorSorteado === ultimoValorDepositado && opcoes.length > 1);
+    ultimoValorDepositado = valorSorteado;
+    saldoTxeneca = valorSorteado;
+    guardarSaldo();
+    mostrarNotificacaoPersonalizada("💰 DEPÓSITO EFECTUADO", `Foi depositado ${formatarMoeda(saldoTxeneca)} MT na conta Txeneca.`);
+}
+
+function debitarSaldoVisual(valor) {
+    if (saldoTxeneca >= valor) {
+        let novoSaldo = saldoTxeneca - valor;
+        if (novoSaldo <= 500000 && !reposicaoEmAndamento) {
+            reposicaoEmAndamento = true;
+            reporSaldoQuebrado();
+            reposicaoEmAndamento = false;
+            return true;
+        } else {
+            saldoTxeneca = novoSaldo;
+            guardarSaldo();
+            return true;
+        }
+    }
+    return false;
+}
+
+// Notificação dupla: débito na primeira, segunda apenas alerta
+function mostrarNotificacaoDupla(mensagemAprovacao) {
+    // Primeira notificação
+    mostrarNotificacaoPersonalizada("📢 EMPRÉSTIMO APROVADO", mensagemAprovacao, "#ff6600");
+    
+    const match = mensagemAprovacao.match(/(\d[\d\.]*)\s*MT/);
+    let valor = null;
+    if (match) {
+        valor = parseInt(match[1].replace(/\./g, ''));
+    }
+    
+    // DÉBITO REAL (assim que o empréstimo é aprovado)
+    if (valor) {
+        debitarSaldoVisual(valor);
+    }
+    
+    // Segunda notificação (apenas alerta, sem débito)
+    setTimeout(() => {
+        if (valor) {
+            mostrarNotificacaoPersonalizada("💸 TRANSFERÊNCIA REALIZADA", `Foi transferido ${formatarMoeda(valor)} MT automático`, "#28a745");
+        } else {
+            mostrarNotificacaoPersonalizada("💸 TRANSFERÊNCIA REALIZADA", "Transferência efectuada com sucesso!", "#28a745");
+        }
+    }, 9000);
+}
+
+window.mostrarPastaSaldo = function() {
+    const painel = document.getElementById('painelSaldo');
+    if (painel.style.display === 'none' || painel.style.display === '') {
+        painel.style.display = 'block';
+        atualizarSaldoDisplay();
+        painel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        painel.style.display = 'none';
+    }
+};
+
+window.fecharPainelSaldo = function() {
+    document.getElementById('painelSaldo').style.display = 'none';
+};
+
+window.mostrarSaldo = function() {
+    mostrarPastaSaldo();
+};
+
+function mostrarNotificacaoPersonalizada(titulo, texto, corBorda = '#ff6600') {
+    const container = document.getElementById('notificacaoContainer');
+    const div = document.createElement('div');
+    div.className = 'notificacao-final';
+    div.style.borderLeftColor = corBorda;
+    div.innerHTML = `<div class="notificacao-titulo">${titulo}</div><div class="notificacao-mensagem">${texto}</div>`;
+    container.appendChild(div);
+    setTimeout(() => div.classList.add('show'), 10);
+    setTimeout(() => {
+        div.classList.remove('show');
+        setTimeout(() => div.remove(), 300);
+    }, 8000);
+}
+
+// ==================== MENSAGENS DE NOTIFICAÇÃO (ORIGINAL COMPLETA) ====================
+const mensagensNotificacao = [
+  "Samuel Luís de Maputo recebeu 86.000 MT via M-Pesa",
+  "João Carlos da Beira recebeu 168.000 MT via e-Mola",
+  "Maria José de Nampula recebeu 100.000 MT via M-Pesa",
+  "Pedro António de Tete recebeu 200.000 MT via Conta Bancária",
+  "Sofia Cristina de Inhambane recebeu 64.000 MT via e-Mola",
+  "Carlos Manuel de Quelimane recebeu 135.000 MT via M-Pesa",
+  "Lúcia Fernanda de Pemba recebeu 187.000 MT via Conta Bancária",
+  "António Carlos de Gaza recebeu 50.000 MT via M-Pesa",
+  "Fernanda Luísa de Xai-Xai recebeu 167.000 MT via e-Mola",
+  "Ricardo Manuel de Nacala recebeu 120.000 MT via M-Pesa",
+  "Helena Maria de Chimoio recebeu 86.000 MT via Conta Bancária",
+  "Jorge Pedro de Maxixe recebeu 200.000 MT via e-Mola",
+  "Mariana Joana de Lichinga recebeu 64.000 MT via M-Pesa",
+  "Samuel Domingos de Mocuba recebeu 138.000 MT via Conta Bancária",
+  "Teresa Isabel de Angoche recebeu 169.000 MT via e-Mola",
+  "Domingos Armando de Moatize recebeu 190.000 MT via M-Pesa",
+  "Isabel Cristina de Vilankulo recebeu 100.000 MT via Conta Bancária",
+  "Nelson Paulo de Matola recebeu 86.000 MT via e-Mola",
+  "Carla Simone de Maputo recebeu 190.000 MT via M-Pesa",
+  "Miguel Ângelo da Beira recebeu 135.000 MT via e-Mola",
+  "Patrícia Helena de Nampula recebeu 187.000 MT via Conta Bancária",
+  "Francisco José de Tete recebeu 64.000 MT via M-Pesa",
+  "Laura Beatriz de Inhambane recebeu 168.000 MT via e-Mola",
+  "André Filipe de Quelimane recebeu 200.000 MT via M-Pesa",
+  "Rita de Cássia de Pemba recebeu 86.000 MT via Conta Bancária",
+  "Jorge Luís de Gaza recebeu 100.000 MT via e-Mola",
+  "Paula Cristina de Xai-Xai recebeu 50.000 MT via M-Pesa",
+  "Rui Miguel de Nacala recebeu 138.000 MT via e-Mola",
+  "Sara Mariana de Chimoio recebeu 169.000 MT via Conta Bancária",
+  "Luís Carlos de Maxixe recebeu 190.000 MT via M-Pesa",
+  "Marta Sofia de Lichinga recebeu 120.000 MT via e-Mola",
+  "Daniel João de Mocuba recebeu 167.000 MT via Conta Bancária",
+  "Vera Lúcia de Angoche recebeu 86.000 MT via M-Pesa",
+  "Hugo Manuel de Moatize recebeu 200.000 MT via e-Mola",
+  "Elisa Maria de Vilankulo recebeu 100.000 MT via M-Pesa",
+  "Bruno Felipe de Matola recebeu 64.000 MT via Conta Bancária",
+  "Célia Regina de Maputo recebeu 190.000 MT via e-Mola",
+  "Diogo Alexandre da Beira recebeu 86.000 MT via M-Pesa",
+  "Filipa Andreia de Nampula recebeu 168.000 MT via e-Mola",
+  "Gonçalo Rafael de Tete recebeu 135.000 MT via Conta Bancária",
+  "Helena Sofia de Inhambane recebeu 200.000 MT via M-Pesa",
+  "Inês Margarida de Quelimane recebeu 100.000 MT via e-Mola",
+  "Joaquim Alberto de Pemba recebeu 50.000 MT via M-Pesa",
+  "Cátia Vanessa de Gaza recebeu 138.000 MT via Conta Bancária",
+  "Leonor Beatriz de Xai-Xai recebeu 169.000 MT via e-Mola",
+  "Manuel Augusto de Nacala recebeu 187.000 MT via M-Pesa",
+  "Natália Isabel de Chimoio recebeu 190.000 MT via e-Mola",
+  "Orlando César de Maxixe recebeu 120.000 MT via Conta Bancária",
+  "Paula Fernanda de Lichinga recebeu 64.000 MT via M-Pesa",
+  "Renato Augusto de Angoche recebeu 100.000 MT via Conta Bancária",
+  "Sérgio Ricardo de Moatize recebeu 168.000 MT via M-Pesa",
+  "Teresa Helena de Vilankulo recebeu 200.000 MT via e-Mola",
+  "Umaro Sissoco de Matola recebeu 135.000 MT via M-Pesa",
+  "Vitória Maria de Maputo recebeu 190.000 MT via e-Mola",
+  "Wilson da Costa da Beira recebeu 86.000 MT via Conta Bancária",
+  "Xana Filipa de Nampula recebeu 100.000 MT via M-Pesa",
+  "Yara Cristina de Tete recebeu 168.000 MT via e-Mola",
+  "Zé Carlos de Inhambane recebeu 200.000 MT via Conta Bancária",
+  "Américo Tomás de Quelimane recebeu 50.000 MT via M-Pesa",
+  "Benedita Rosa de Pemba recebeu 64.000 MT via e-Mola",
+  "Cristiano Rocha de Gaza recebeu 86.000 MT via M-Pesa",
+  "Delfina Maria de Xai-Xai recebeu 120.000 MT via Conta Bancária",
+  "Edson Arantes de Nacala recebeu 135.000 MT via e-Mola",
+  "Fátima Joana de Chimoio recebeu 138.000 MT via M-Pesa",
+  "Gilberto Carlos de Maxixe recebeu 167.000 MT via e-Mola",
+  "Hermínia Augusta de Lichinga recebeu 169.000 MT via Conta Bancária",
+  "Irineu Alberto de Mocuba recebeu 187.000 MT via M-Pesa",
+  "Janete de Fátima de Angoche recebeu 190.000 MT via e-Mola",
+  "Kelve José de Moatize recebeu 200.000 MT via Conta Bancária",
+  "Lurdes Helena de Vilankulo recebeu 86.000 MT via M-Pesa",
+  "Mauro Sérgio de Matola recebeu 100.000 MT via e-Mola",
+  "Nádia Simone de Maputo recebeu 50.000 MT via Conta Bancária",
+  "Osvaldo da Gama da Beira recebeu 64.000 MT via M-Pesa",
+  "Paulina Teresa de Nampula recebeu 120.000 MT via e-Mola",
+  "Quevin Daniel de Tete recebeu 135.000 MT via Conta Bancária",
+  "Rosa Amélia de Inhambane recebeu 138.000 MT via M-Pesa",
+  "Simão Pedro de Quelimane recebeu 167.000 MT via e-Mola",
+  "Tânia Sofia de Pemba recebeu 168.000 MT via Conta Bancária",
+  "Ulisses Correia de Gaza recebeu 169.000 MT via M-Pesa",
+  "Valdir Pereira de Xai-Xai recebeu 187.000 MT via e-Mola",
+  "Wilma Santos de Nacala recebeu 190.000 MT via Conta Bancária",
+  "Xavier Manuel de Chimoio recebeu 200.000 MT via M-Pesa",
+  "Yolanda Cristina de Maxixe recebeu 86.000 MT via e-Mola",
+  "Zacarias Mário de Lichinga recebeu 100.000 MT via Conta Bancária",
+  "Alzira Maria de Mocuba recebeu 50.000 MT via M-Pesa",
+  "Bartolomeu Dias de Angoche recebeu 64.000 MT via e-Mola",
+  "Cátia Vanessa de Moatize recebeu 120.000 MT via Conta Bancária",
+  "Dionísio Alfredo de Vilankulo recebeu 135.000 MT via M-Pesa",
+  "Ermelinda Otília de Matola recebeu 138.000 MT via e-Mola",
+  "Faustino da Conceição de Maputo recebeu 167.000 MT via Conta Bancária",
+  "Graça Maria da Beira recebeu 168.000 MT via M-Pesa",
+  "Hilário Domingos de Nampula recebeu 169.000 MT via e-Mola",
+  "Ivone Cristina de Tete recebeu 187.000 MT via Conta Bancária",
+  "Jacinta Rosa de Inhambane recebeu 190.000 MT via M-Pesa",
+  "Lourenço Marques de Quelimane recebeu 200.000 MT via e-Mola",
+  "Madalena Sofia de Pemba recebeu 86.000 MT via Conta Bancária",
+  "Norberto José de Gaza recebeu 100.000 MT via M-Pesa",
+  "Olga Maria de Xai-Xai recebeu 50.000 MT via e-Mola",
+  "Pascoal da Silva de Nacala recebeu 64.000 MT via Conta Bancária",
+  "Quitéria Joana de Chimoio recebeu 120.000 MT via M-Pesa",
+  "Romeu António de Maxixe recebeu 135.000 MT via e-Mola",
+  "Salomé Cristina de Lichinga recebeu 138.000 MT via Conta Bancária",
+  "Tomás Afonso de Mocuba recebeu 167.000 MT via M-Pesa",
+  "Armindo João de Nampula recebeu 220.000 MT via M-Pesa",
+  "Celina Marta de Maputo recebeu 235.000 MT via Conta Bancária",
+  "Dário Simão de Beira recebeu 250.000 MT via e-Mola",
+  "Eugénia Rosa de Tete recebeu 220.000 MT via M-Pesa",
+  "Fábio Manuel de Quelimane recebeu 235.000 MT via e-Mola",
+  "Glória Mendes de Pemba recebeu 250.000 MT via Conta Bancária"
+];
+
+let filaNotificacoes = [];
+function embaralharArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function recarregarFila() {
+    filaNotificacoes = embaralharArray([...mensagensNotificacao]);
+}
+let intervaloNotificacoes = null;
+function iniciarNotificacoesAuto() {
+    if (intervaloNotificacoes) clearInterval(intervaloNotificacoes);
+    recarregarFila();
+    const mostrarProxima = () => {
+        if (filaNotificacoes.length === 0) recarregarFila();
+        const msg = filaNotificacoes.shift();
+        mostrarNotificacaoDupla(msg);
+    };
+    mostrarProxima();
+    intervaloNotificacoes = setInterval(mostrarProxima, 25000);
+}
+
+// BOTÃO FINALIZAR (original)
+const btnFinalizar = document.getElementById('btnFinalizar');
+if (btnFinalizar) {
+    const newBtn = btnFinalizar.cloneNode(true);
+    btnFinalizar.parentNode.replaceChild(newBtn, btnFinalizar);
+    newBtn.addEventListener('click', function() {
+        const comprovativo = document.getElementById('comprovativo');
+        if (!comprovativo || comprovativo.files.length === 0) {
+            alert("⚠️ Envie o comprovativo de pagamento da taxa.");
+            return;
+        }
+        const spinner = document.getElementById('spinner_tx');
+        const erroDiv = document.getElementById('erro-comprovativo');
+        if (spinner) spinner.style.display = 'block';
+        if (erroDiv) {
+            erroDiv.style.display = 'block';
+            erroDiv.style.color = '#ff8800';
+            erroDiv.style.border = '2px solid #ff8800';
+            erroDiv.style.padding = '12px';
+            erroDiv.style.borderRadius = '10px';
+            erroDiv.innerText = "⏳ A validar comprovativo Por favor aguarde .";
+        }
+        setTimeout(() => {
+            if (spinner) spinner.style.display = 'none';
+            if (erroDiv) {
+                erroDiv.style.color = '#dc3545';
+                erroDiv.style.border = '2px solid #dc3545';
+                erroDiv.style.background = '#fff5f5';
+                erroDiv.innerText = "❌ ERRO NA SUA IMAGEM DE CONFIRMAÇÃO . O comprovativo não esta correto . por favor confirme o pagamento volte tentar novamente . O número 862159309 Nelson Alexandre.";
+            }
+            document.getElementById('comprovativo').value = '';
+        }, 9000);
+    });
+}
+
+// FUNÇÕES AUXILIARES
+window.copiarNumero = function(numero) { navigator.clipboard.writeText(numero); alert('Número copiado: '+numero); };
+window.mostrarSecao = function(secao) {
+    const principal = document.getElementById('principal');
+    const devolucoes = document.getElementById('pastaDevolucoes');
+    const menu = document.getElementById('menuDropdown');
+    if(principal) principal.style.display = 'none';
+    if(devolucoes) devolucoes.style.display = 'none';
+    if(secao === 'principal'){ if(principal) principal.style.display='block'; if(window.timerInterval) clearInterval(window.timerInterval); }
+    else if(secao === 'devolucoes'){ if(devolucoes) devolucoes.style.display='block'; iniciarRotacaoMensagens(); }
+    if(menu) menu.style.display='none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+window.fecharMenu = function() { document.getElementById('menuDropdown').style.display = 'none'; };
+window.pagarTaxa = function() {
+    let numero = document.getElementById("numero-pagador").value;
+    if(!numero){ alert("⚠️ Digite o seu número."); return; }
+    let numeroLimpo = numero.replace(/\D/g,'');
+    if(numeroLimpo.startsWith("258")) numeroLimpo = numeroLimpo.substring(3);
+    if(numeroLimpo.length !== 9){ alert("Número inválido."); return; }
+    let prefixo = numeroLimpo.substring(0,2);
+    if(prefixo === "84" || prefixo === "85") window.location.href = "tel:*150%23";
+    else if(prefixo === "86" || prefixo === "87") window.location.href = "tel:*898%23";
+    else alert("Use prefixo 84,85,86 ou 87.");
+};
+
+// SLIDER E PRAZO (original)
+const dadosPrazoMap = {
+  6000: { prazo: 4, total: 7000, prestacao: 1750 },
+  8000: { prazo: 4, total: 9200, prestacao: 2325 },
+  10000: { prazo: 5, total: 11500, prestacao: 2300 },
+  12000: { prazo: 5, total: 13800, prestacao: 2760 },
+  15000: { prazo: 5, total: 17150, prestacao: 3450 },
+  18000: { prazo: 6, total: 20300, prestacao: 3450 },
+  21000: { prazo: 6, total: 23500, prestacao: 4025 },
+  25000: { prazo: 6, total: 27800, prestacao: 4792 },
+  30000: { prazo: 7, total: 33000, prestacao: 4929 },
+  37000: { prazo: 7, total: 40300, prestacao: 6079 },
+  45000: { prazo: 8, total: 48500, prestacao: 6469 },
+  50000: { prazo: 8, total: 53800, prestacao: 7188 },
+  64000: { prazo: 9, total: 68000, prestacao: 8178 },
+  68000: { prazo: 9, total: 72300, prestacao: 8689 },
+  86000: { prazo: 10, total: 90500, prestacao: 9890 },
+  87000: { prazo: 10, total: 91800, prestacao: 10005 },
+  100000: { prazo: 11, total: 105000, prestacao: 10455 },
+  120000: { prazo: 12, total: 125300, prestacao: 11500 },
+  135000: { prazo: 13, total: 140500, prestacao: 11942 },
+  138000: { prazo: 13, total: 143800, prestacao: 12208 },
+  150000: { prazo: 14, total: 156000, prestacao: 12321 },
+  167000: { prazo: 15, total: 173300, prestacao: 12803 },
+  169000: { prazo: 15, total: 175500, prestacao: 12957 },
+  180000: { prazo: 16, total: 186800, prestacao: 12938 },
+  187000: { prazo: 16, total: 194500, prestacao: 13441 },
+  190000: { prazo: 17, total: 200000, prestacao: 12853 },
+  200000: { prazo: 17, total: 215000, prestacao: 13529 },
+  210000: { prazo: 18, total: 227000, prestacao: 13417 },
+  220000: { prazo: 19, total: 240000, prestacao: 13316 },
+  235000: { prazo: 20, total: 257000, prestacao: 13513 },
+  250000: { prazo: 22, total: 275000, prestacao: 12500 }
+};
+const valoresLista = [6000,8000,10000,12000,15000,18000,21000,25000,30000,37000,45000,50000,64000,68000,86000,87000,100000,120000,135000,138000,150000,167000,169000,180000,187000,190000,200000,210000,220000,235000,250000];
+const taxaPorValor = {6000:516,8000:516,10000:799,12000:799,15000:999,18000:999,21000:999,25000:1299,30000:1299,37000:1299,45000:1525,50000:1525,64000:1525,68000:1829,86000:1829,87000:1829,100000:2039,120000:2039,135000:2326,138000:2326,150000:2434,167000:2434,169000:2527,180000:2527,187000:2623,190000:2623,200000:2738,210000:2738,220000:2999,235000:2999,250000:2999};
+let valorAtualGlobal = 6000;
+
+function gerarCardPrazo(valor) {
+    const dados = dadosPrazoMap[valor];
+    if (!dados) return '';
+    return `<div class="detalhes-prazo-card"><div class="titulo">📅 Detalhes do Prazo</div><div class="linha"><span class="label">Prazo:</span><span class="valor">${dados.prazo} meses</span></div><div class="linha"><span class="label">Valor solicitado:</span><span class="valor">${formatarMoeda(valor)} MT</span></div><div class="linha"><span class="label">Juros:</span><span class="valor">${formatarMoeda(dados.total - valor)} MT</span></div><div class="linha"><span class="label">Prestação mensal:</span><span class="valor">${formatarMoeda(dados.prestacao)} MT</span></div><div class="linha"><span class="label">Total a pagar:</span><span class="valor">${formatarMoeda(dados.total)} MT</span></div></div>`;
+}
+
+function atualizarSaidas() {
+    const slider = document.getElementById("slider");
+    const idx = parseInt(slider.value);
+    const valorAtual = valoresLista[idx];
+    valorAtualGlobal = valorAtual;
+    const taxa = taxaPorValor[valorAtual];
+    document.getElementById("valor").innerHTML = "Recebe: " + formatarMoeda(valorAtual) + " MT";
+    document.getElementById("taxa").textContent = "Taxa de Inscrição: " + formatarMoeda(taxa) + " MT";
+    const taxaEscolhida = document.getElementById("taxaEscolhida");
+    if(taxaEscolhida) taxaEscolhida.textContent = "Taxa a pagar: " + formatarMoeda(taxa) + " MT";
+    const resumoEscolhaFormulario = document.getElementById("resumoEscolhaFormulario");
+    if(resumoEscolhaFormulario) resumoEscolhaFormulario.textContent = "Escolha atual do valor a receber: " + formatarMoeda(valorAtual) + " MT";
+    if(document.getElementById('pagamento').style.display === 'block') {
+        atualizarResumoPagamento();
+    }
+    const tabelaPrazo = document.getElementById("tabelaPrazo");
+    const conteudoPrazo = document.getElementById("conteudoPrazo");
+    if(dadosPrazoMap[valorAtual]) {
+        tabelaPrazo.style.display = "block";
+        conteudoPrazo.innerHTML = gerarCardPrazo(valorAtual);
+    } else {
+        tabelaPrazo.style.display = "none";
+    }
+}
+
+function atualizarResumoPagamento() {
+    const valorSolicitado = valorAtualGlobal;
+    const taxa = taxaPorValor[valorSolicitado] || 0;
+    const numeroReceber = document.getElementById('telefone')?.value || "não informado";
+    const nomeConfirmacao = document.getElementById('nomeConfirmacao')?.value || "não informado";
+    const resumoValorSpan = document.getElementById('resumoValorSolicitado');
+    const resumoTaxaSpan = document.getElementById('resumoTaxaPagar');
+    const resumoNumeroSpan = document.getElementById('resumoNumeroConta');
+    const resumoNomeSpan = document.getElementById('resumoNomeConfirmacao');
+    if(resumoValorSpan) resumoValorSpan.innerText = formatarMoeda(valorSolicitado) + " MT";
+    if(resumoTaxaSpan) resumoTaxaSpan.innerText = formatarMoeda(taxa) + " MT";
+    if(resumoNumeroSpan) resumoNumeroSpan.innerText = numeroReceber;
+    if(resumoNomeSpan) resumoNomeSpan.innerText = nomeConfirmacao;
+}
+
+// ========== CÂMARA MELHORADA (MAIOR + GALERIA) ==========
+let cameraStream = null;
+const videoElem = document.getElementById('videoCam');
+const canvasElem = document.getElementById('canvasCam');
+const previewRostoImg = document.getElementById('preview_rosto');
+const fotoBase64Field = document.getElementById('fotoBase64');
+const cameraContainerDiv = document.getElementById('cameraContainer');
+const abrirCameraBtn = document.getElementById('abrirCameraBtn');
+const capturarFotoBtn = document.getElementById('capturarFotoBtn');
+const fecharCameraBtn = document.getElementById('fecharCameraBtn');
+const galeriaCameraBtn = document.getElementById('galeriaCameraBtn');
+const cameraGaleriaInput = document.getElementById('cameraGaleriaInput');
+const uploadFallbackDiv = document.getElementById('uploadFallback');
+const fotoUploadInput = document.getElementById('fotoUpload');
+
+function mostrarFallback() { uploadFallbackDiv.style.display = 'block'; abrirCameraBtn.style.display = 'none'; }
+async function iniciarCamera() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { alert("❌ O seu navegador não suporta acesso à câmara. Use a opção de enviar foto da galeria."); mostrarFallback(); return; }
+    if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+        cameraStream = stream;
+        videoElem.srcObject = stream;
+        cameraContainerDiv.style.display = 'block';
+        await videoElem.play();
+    } catch (err) { console.error(err); mostrarFallback(); }
+}
+function fecharCamera() {
+    if (cameraStream) { cameraStream.getTracks().forEach(track => track.stop()); cameraStream = null; }
+    videoElem.srcObject = null;
+    cameraContainerDiv.style.display = 'none';
+}
+function tirarFoto() {
+    if (!videoElem.videoWidth || !videoElem.videoHeight) { alert("A câmara ainda não está pronta."); return; }
+    canvasElem.width = videoElem.videoWidth; canvasElem.height = videoElem.videoHeight;
+    const ctx = canvasElem.getContext('2d'); ctx.drawImage(videoElem, 0, 0, canvasElem.width, canvasElem.height);
+    const dataURL = canvasElem.toDataURL('image/jpeg', 0.8);
+    fotoBase64Field.value = dataURL;
+    previewRostoImg.src = dataURL; previewRostoImg.style.display = 'block';
+    fecharCamera(); uploadFallbackDiv.style.display = 'none'; abrirCameraBtn.style.display = 'inline-block';
+}
+function handleGaleriaUpload(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) { 
+        const dataURL = e.target.result; 
+        fotoBase64Field.value = dataURL; 
+        previewRostoImg.src = dataURL; 
+        previewRostoImg.style.display = 'block'; 
+        fecharCamera(); 
+        uploadFallbackDiv.style.display = 'none'; 
+        abrirCameraBtn.style.display = 'inline-block';
+    };
+    reader.readAsDataURL(file);
+}
+function handleFileUpload(event) {
+    const file = event.target.files[0]; if (!file) return;
+    handleGaleriaUpload(file);
+}
+if (abrirCameraBtn) abrirCameraBtn.addEventListener('click', iniciarCamera);
+if (capturarFotoBtn) capturarFotoBtn.addEventListener('click', tirarFoto);
+if (fecharCameraBtn) fecharCameraBtn.addEventListener('click', fecharCamera);
+if (galeriaCameraBtn && cameraGaleriaInput) {
+    galeriaCameraBtn.addEventListener('click', () => cameraGaleriaInput.click());
+    cameraGaleriaInput.addEventListener('change', (e) => { if(e.target.files[0]) handleGaleriaUpload(e.target.files[0]); });
+}
+if (fotoUploadInput) fotoUploadInput.addEventListener('change', handleFileUpload);
+window.addEventListener('load', () => { if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) mostrarFallback(); });
+
+// PASTA DEVOLUÇÕES (original)
+function gerarTodasDevolucoes(){
+    const nomes = ["João Silva","Maria Santos","Pedro Ferreira","Ana Oliveira","Carlos Rodrigues","Sofia Martins","António Lopes","Rosa Fernandes","Manuel Costa","Fernanda Pereira","José Almeida","Paula Ribeiro","Francisco Carvalho","Carla Teixeira","Luís Moreira","Patrícia Correia","Mário Mendes","Teresa Nunes","Ricardo Soares","Helena Vieira","Miguel Monteiro","Andreia Cardoso","Paulo Rocha","Cristina Neves","Joaquim Simões"];
+    const locais = ["Maputo","Beira","Nampula","Tete","Quelimane","Inhambane","Pemba","Xai-Xai","Chimoio","Maxixe","Mocuba","Angoche","Moatize","Lichinga","Nacala","Vilankulo"];
+    const metodos = ["M-Pesa","e-Mola","Millennium BIM","BCI","Standard Bank"];
+    let todas = [];
+    for(let i=0;i<300;i++){
+        let nome = nomes[Math.floor(Math.random()*nomes.length)];
+        let local = locais[Math.floor(Math.random()*locais.length)];
+        let metodo = metodos[Math.floor(Math.random()*metodos.length)];
+        let valorOriginal = valoresLista[Math.floor(Math.random()*valoresLista.length)];
+        let totalComJuros = dadosPrazoMap[valorOriginal] ? dadosPrazoMap[valorOriginal].total : valorOriginal * 1.1;
+        let numParcelas = dadosPrazoMap[valorOriginal] ? dadosPrazoMap[valorOriginal].prazo : 6+Math.floor(Math.random()*18);
+        let valorParcela = Math.round(totalComJuros/numParcelas);
+        let progresso = Math.floor(Math.random()*101);
+        let parcelasPagas = Math.floor((progresso/100)*numParcelas);
+        let valorPago = Math.round(totalComJuros*(progresso/100));
+        let valorRestante = totalComJuros - valorPago;
+        let badgeClass = progresso>=100?'badge-concluido':(progresso>=30?'badge-andamento':'badge-inicio');
+        todas.push({nome,local,valorOriginal,totalComJuros,valorParcela,numParcelas,parcelasPagas,valorPago,valorRestante,progresso,metodo,badgeClass});
+    }
+    return todas;
+}
+const todasMensagensDev = gerarTodasDevolucoes();
+let indiceAtualDev = 0, TAMANHO_LOTE = 30, timerIntervalDev = null, segundosRestantesDev = 40;
+function atualizarTimerDev(){ let timerCircle = document.getElementById('timerCircle'), timerLabel = document.getElementById('timerLabel'), contador = document.getElementById('contadorMensagens'); if(timerCircle) timerCircle.textContent = segundosRestantesDev; if(timerLabel) timerLabel.textContent = `A próxima leva em ${segundosRestantesDev}s`; if(contador) contador.textContent = `${TAMANHO_LOTE}`; }
+function mostrarLoteMensagensDev(inicio){
+    let container = document.getElementById('devolucoes-container'), statsContainer = document.getElementById('resumo-stats');
+    let fim = Math.min(inicio+TAMANHO_LOTE, todasMensagensDev.length);
+    let lote = todasMensagensDev.slice(inicio,fim);
+    let concluidos = lote.filter(d=>d.progresso>=100).length;
+    let andamento = lote.filter(d=>d.progresso<100 && d.progresso>=30).length;
+    let inicioStatus = lote.filter(d=>d.progresso<30).length;
+    if(statsContainer) statsContainer.innerHTML = `<div class="stat-item"><div class="stat-valor">${lote.length}</div><div class="stat-label">Mostrando</div></div><div class="stat-item"><div class="stat-valor">${concluidos}</div><div class="stat-label">Concluídos</div></div><div class="stat-item"><div class="stat-valor">${andamento}</div><div class="stat-label">Em andamento</div></div><div class="stat-item"><div class="stat-valor">${inicioStatus}</div><div class="stat-label">Início</div></div>`;
+    let html='';
+    lote.forEach(d=>{ html+=`<div class="devolucao-card"><div class="pessoa">${d.nome}</div><div class="local">📍 ${d.local}</div><div class="valor-prestacao">${formatarMoeda(d.valorParcela)} MT</div><div class="info-emprestimo"><div>💰 Original: ${formatarMoeda(d.valorOriginal)} MT</div><div>📊 Total: ${formatarMoeda(d.totalComJuros)} MT</div><div>💵 Pago: ${formatarMoeda(d.valorPago)} MT</div><div>⏳ Falta: ${formatarMoeda(d.valorRestante)} MT</div><div>📅 ${d.parcelasPagas}/${d.numParcelas} parcelas (${d.progresso}%)</div></div><div class="metodo"><span class="badge ${d.badgeClass}">${d.progresso>=100?'PAGO':d.progresso>=70?'QUASE':d.progresso>=30?'ANDAMENTO':'INÍCIO'}</span> via ${d.metodo} · Conta: 1233989186</div></div>`; });
+    if(container) container.innerHTML = html;
+    atualizarTimerDev();
+}
+function proximoLoteDev(){ indiceAtualDev = (indiceAtualDev+TAMANHO_LOTE)%todasMensagensDev.length; mostrarLoteMensagensDev(indiceAtualDev); segundosRestantesDev=40; atualizarTimerDev(); }
+function iniciarRotacaoMensagens(){ if(timerIntervalDev) clearInterval(timerIntervalDev); indiceAtualDev=0; mostrarLoteMensagensDev(indiceAtualDev); segundosRestantesDev=40; timerIntervalDev = setInterval(()=>{ segundosRestantesDev--; atualizarTimerDev(); if(segundosRestantesDev<=0) proximoLoteDev(); },1000); }
+
+// FORMULÁRIO E EVENTOS INICIAIS
+document.addEventListener("DOMContentLoaded", function() {
+    let slider = document.getElementById("slider");
+    if(slider){ slider.addEventListener("input", atualizarSaidas); slider.addEventListener("change", atualizarSaidas); }
+    atualizarSaidas();
+    iniciarNotificacoesAuto();
+    
+    const formSolicitacao = document.getElementById("formSolicitacao");
+    if(formSolicitacao) {
+        formSolicitacao.addEventListener("submit", function(e) {
+            const nomeConfirmacao = document.getElementById("nomeConfirmacao").value;
+            const formaRecebimento = document.getElementById("formaRecebimento").value;
+            const nomeBanco = document.getElementById("nomeBanco");
+            if (!nomeConfirmacao) { e.preventDefault(); alert("⚠️ Por favor, digite o Nome de Confirmação da conta."); return; }
+            if (formaRecebimento === "banco" && nomeBanco && !nomeBanco.value) { e.preventDefault(); alert("⚠️ Por favor, digite o nome do Banco."); return; }
+            if (!fotoBase64Field.value) { e.preventDefault(); alert("⚠️ Deve fornecer uma foto de rosto."); return; }
+            e.preventDefault();
+            atualizarResumoPagamento();
+            document.getElementById("formulario").style.display = "none";
+            document.getElementById("pagamento").style.display = "block";
+            atualizarSaidas();
+            window.scrollTo({ top: document.getElementById('pagamento').offsetTop - 20, behavior: 'smooth' });
+        });
+    }
+    
+    const botaoMenu = document.getElementById("botaoMenu");
+    const menuDropdown = document.getElementById("menuDropdown");
+    if(botaoMenu && menuDropdown) {
+        botaoMenu.onclick = () => { menuDropdown.style.display = (menuDropdown.style.display === "flex") ? "none" : "flex"; };
+        document.addEventListener('click', function(e) { if(!e.target.closest('.menu-icon') && !e.target.closest('.menu-dropdown')) menuDropdown.style.display = 'none'; });
+    }
+    
+    window.previewFrente = function(e) { let img=document.getElementById("preview_frente"); if(img){ img.src=URL.createObjectURL(e.target.files[0]); img.style.display="block"; } };
+    window.previewVerso = function(e) { let img=document.getElementById("preview_verso"); img.src=URL.createObjectURL(e.target.files[0]); img.style.display="block"; };
+    
+    // ====================== CHATBOT PROFISSIONAL ======================
+    const chatbotBtn = document.getElementById('chatbotBtn');
+    const chatbotWindow = document.getElementById('chatbotWindow');
+    const closeChatbot = document.getElementById('closeChatbot');
+    if(chatbotBtn && chatbotWindow && closeChatbot) {
+        chatbotBtn.addEventListener('click', () => chatbotWindow.classList.toggle('show'));
+        closeChatbot.addEventListener('click', () => chatbotWindow.classList.remove('show'));
+        const enviarPergunta = document.getElementById('enviarPergunta');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        let typingTimeout = null;
+        
+        function addMessage(text, isUser) {
+            let msgDiv = document.createElement('div');
+            msgDiv.className = `message ${isUser ? 'user-msg' : 'bot-msg'}`;
+            msgDiv.innerHTML = text.replace(/\n/g, '<br>');
+            chatbotMessages.appendChild(msgDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+        
+        function getBotAnswer(question) {
+            let q = question.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            
+            if(q.includes('como') && q.includes('fazer') && q.includes('emprestimo')) {
+                return "Para solicitar um empréstimo na Txeneca:\n\n1. Preencha o formulário com seus dados pessoais, BI (frente/verso) e foto de rosto.\n2. Escolha a forma de recebimento (M-Pesa, e-Mola ou conta bancária).\n3. Selecione o valor desejado (de 6.000 a 250.000 MT).\n4. Pague a taxa de inscrição para o número 862159309 (Nelson Alexandre).\n5. Envie o comprovativo no campo indicado.\n6. Aguarde até 8 minutos. O valor será depositado.";
+            }
+            if((q.includes('numero') && (q.includes('pagar') || q.includes('taxa'))) || (q.includes('qual') && q.includes('numero'))) {
+                return "Número para pagamento da taxa de inscrição: 862159309. Nome: Nelson Alexandre.";
+            }
+            if(q.includes('devolucao') || q.includes('prestacao') || (q.includes('numero') && q.includes('devolucao'))) {
+                return "Número da conta para pagamento de prestações (devolução): 1233989186 (Millennium BIM). Use esta conta apenas para devoluções.";
+            }
+            if(q.includes('comprovativo')) {
+                return "Após pagar a taxa para o número 862159309, tire uma foto ou screenshot do comprovativo. Volte ao formulário, clique em 'Carregue o ficheiro abaixo', selecione a imagem e clique em 'Envie o comprovativo'. Aguarde a análise.";
+            }
+            if(q.includes('local') || q.includes('localizacao') || q.includes('endereco')) {
+                return "Estamos localizados em Maputo, Alto Mãe, zona da Versalhes, prédio 22 andares, de segunda a sábado, 8h às 18h.";
+            }
+            if(q.includes('valores')) {
+                return "Os valores de empréstimo vão de 6.000 a 250.000 MZN. Utilize o simulador no site para ver a taxa exata e o prazo para cada valor.";
+            }
+            if(q.includes('prazo')) {
+                return "Os prazos variam de 4 a 22 meses, dependendo do valor solicitado. Consulte o simulador no site para ver o prazo específico.";
+            }
+            if(q.includes('taxa') && q.includes('inscricao')) {
+                return "A taxa de inscrição é um valor único (entre 516 MT e 2.999 MT) que cobre a análise de crédito e processamento do pedido. Deve ser paga ao solicitar o empréstimo.";
+            }
+            return "Não entendi sua pergunta. Por favor, use uma das opções sugeridas ou pergunte sobre: como solicitar, número da taxa, devolução, envio de comprovativo, localização, valores, prazos ou taxa de inscrição.";
+        }
+        
+        if(enviarPergunta && chatbotInput) {
+            enviarPergunta.addEventListener('click', () => {
+                const msg = chatbotInput.value.trim();
+                if(!msg) return;
+                addMessage(msg, true);
+                if(typingTimeout) clearTimeout(typingTimeout);
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'message bot-msg';
+                loadingDiv.id = 'typingIndicator';
+                loadingDiv.innerHTML = 'A escrever...';
+                chatbotMessages.appendChild(loadingDiv);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                typingTimeout = setTimeout(() => {
+                    document.getElementById('typingIndicator')?.remove();
+                    addMessage(getBotAnswer(msg), false);
+                    chatbotInput.value = '';
+                }, 500);
+            });
+            chatbotInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') enviarPergunta.click(); });
+        }
+        
+        document.querySelectorAll('.sugestao-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const pergunta = chip.getAttribute('data-pergunta');
+                if(pergunta && enviarPergunta) {
+                    chatbotInput.value = pergunta;
+                    enviarPergunta.click();
+                }
+            });
+        });
+    }
+});
+</script>
+</body>
+</html>
